@@ -1,8 +1,16 @@
 import createDataContext from './createDataContext';
-import blogReducer, { addBlog } from '../ducks/blog';
+import blogReducer, { addPost, deletePost } from '../ducks/blog';
 
-const addBlogPost = dispatch => () => {
-    dispatch(addBlog());
+const addBlogPost = dispatch => title => {
+    dispatch(addPost(title));
 };
 
-export const { Context, Provider } = createDataContext(blogReducer, { addBlogPost }, []);
+const deleteBlogPost = dispatch => id => {
+    dispatch(deletePost(id));
+};
+
+export const { Context, Provider } = createDataContext(
+    blogReducer,
+    { addBlogPost, deleteBlogPost },
+    []
+);
