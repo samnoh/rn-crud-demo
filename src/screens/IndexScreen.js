@@ -1,19 +1,7 @@
-import React, { useContext, useState } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    FlatList,
-    Button,
-    ScrollView,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    StyleSheet,
-    Dimensions,
-    Vibration
-} from 'react-native';
-import Modal from 'react-native-modal';
+import React, { useContext } from 'react';
+import { Text, FlatList, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 import { Context } from '../context/blogContext';
 
@@ -21,6 +9,7 @@ const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: 15,
         paddingBottom: 25
     },
     row: {
@@ -71,61 +60,10 @@ const styles = StyleSheet.create({
 });
 
 const IndexScreen = ({ navigation }) => {
-    const { state, addBlogPost, deleteBlogPost } = useContext(Context);
-    const [title, setTitle] = useState('');
-    const [isVisible, setVisible] = useState(false);
-
-    const toggleModal = () => {
-        setVisible(!isVisible);
-    };
-
-    const renderModal = () => {
-        return (
-            <Modal
-                isVisible={isVisible}
-                customBackdrop={
-                    <TouchableWithoutFeedback onPress={toggleModal}>
-                        <View style={{ flex: 1, backgroundColor: 'black' }} />
-                    </TouchableWithoutFeedback>
-                }
-            >
-                <View style={styles.model}>
-                    <Text style={styles.modalTitle}>Enter Title</Text>
-                    <TextInput
-                        value={title}
-                        onChangeText={setTitle}
-                        style={styles.modalTitleInput}
-                        autoFocus
-                    />
-                    <View style={styles.modalButtonContainer}>
-                        <Button
-                            title="Ok"
-                            onPress={() => {
-                                if (title !== '') {
-                                    addBlogPost(title);
-                                    Vibration.vibrate(500);
-                                }
-                                toggleModal();
-                                setTitle('');
-                            }}
-                        />
-                        <Button
-                            title="Cancle"
-                            onPress={() => {
-                                toggleModal();
-                                setTitle('');
-                            }}
-                        />
-                    </View>
-                </View>
-            </Modal>
-        );
-    };
+    const { state, deleteBlogPost } = useContext(Context);
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Button title="Add Post" onPress={toggleModal} />
-            {renderModal()}
             <FlatList
                 numColumns={2}
                 columnWrapperStyle={styles.row}
@@ -146,5 +84,13 @@ const IndexScreen = ({ navigation }) => {
         </ScrollView>
     );
 };
+
+IndexScreen.navigationOptions = ({ navigation }) => ({
+    headerRight: (
+        <TouchableOpacity onPress={() => navigation.navigate('Create')}>
+            <Feather name="plus" size={25} style={{ marginRight: 20 }} />
+        </TouchableOpacity>
+    )
+});
 
 export default IndexScreen;
