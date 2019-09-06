@@ -88,7 +88,7 @@ const IndexScreen = ({ navigation }) => {
                     <RefreshControl refreshing={state.pending} onRefresh={getBlogPosts} />
                 }
             >
-                {state.pending && <Text>Loading...</Text>}
+                {state.pending && <View></View>}
                 {state.error ? (
                     <Text>Something went wrong</Text>
                 ) : (
