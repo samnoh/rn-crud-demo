@@ -1,4 +1,4 @@
-# React Native CRUD
+# React Native CRUD Demo
 
 ## `TIL`
 
