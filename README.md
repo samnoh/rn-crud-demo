@@ -10,6 +10,13 @@
 navigation.pop();
 ```
 
+-   Listener
+
+```jsx
+const listener = navigation.addListener('didFocus', () => {...});
+listener.remove();
+```
+
 ### FlatList
 
 -   `numColumns`
