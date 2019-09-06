@@ -19,4 +19,8 @@ const EditScreen = ({ navigation }) => {
     );
 };
 
+EditScreen.navigationOptions = () => ({
+    title: 'Edit'
+});
+
 export default EditScreen;

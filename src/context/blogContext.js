@@ -1,22 +1,32 @@
 import createDataContext from './createDataContext';
-import blogReducer, { addPost, deletePost, editPost } from '../ducks/blog';
+import blogReducer, { getPosts, deletePost, editPost } from '../ducks/blog';
+import jsonServer from '../api/jsonServer';
 
-const addBlogPost = dispatch => (title, content, callback) => {
-    dispatch(addPost(title, content));
-    callback();
+const getBlogPosts = dispatch => async callback => {
+    const res = await jsonServer.get('/blogposts');
+    dispatch(getPosts(res));
+    if (callback) callback();
 };
 
-const deleteBlogPost = dispatch => id => {
+const addBlogPost = dispatch => async (title, content, callback) => {
+    await jsonServer.post('/blogposts', { title, content });
+    if (callback) callback();
+};
+
+const deleteBlogPost = dispatch => async (id, callback) => {
+    await jsonServer.delete(`/blogposts/${id}`);
     dispatch(deletePost(id));
+    if (callback) callback();
 };
 
-const editBlogPost = dispatch => (id, title, content, callback) => {
+const editBlogPost = dispatch => async (id, title, content, callback) => {
+    await jsonServer.put(`/blogposts/${id}`, { title, content });
     dispatch(editPost(id, title, content));
-    callback();
+    if (callback) callback();
 };
 
 export const { Context, Provider } = createDataContext(
     blogReducer,
-    { addBlogPost, deleteBlogPost, editBlogPost },
-    [{ title: 'TEST', content: 'test content', id: 1 }]
+    { getBlogPosts, addBlogPost, deleteBlogPost, editBlogPost },
+    [] // initial value
 );

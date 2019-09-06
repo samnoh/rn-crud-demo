@@ -1,5 +1,13 @@
-import React, { useContext } from 'react';
-import { Text, FlatList, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+    Text,
+    FlatList,
+    ScrollView,
+    TouchableOpacity,
+    RefreshControl,
+    StyleSheet,
+    Dimensions
+} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 
@@ -60,28 +68,46 @@ const styles = StyleSheet.create({
 });
 
 const IndexScreen = ({ navigation }) => {
-    const { state, deleteBlogPost } = useContext(Context);
+    const { state, getBlogPosts, deleteBlogPost } = useContext(Context);
+    const [refreshing, setRefreshing] = useState(false);
+
+    useEffect(() => {
+        getBlogPosts();
+
+        const listener = navigation.addListener('didFocus', () => {
+            getBlogPosts();
+        }); // executed when returning to this screen
+
+        return () => listener.remove();
+    }, []);
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <FlatList
-                numColumns={2}
-                columnWrapperStyle={styles.row}
-                keyExtractor={blogPost => blogPost.id}
-                data={state}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.card}
-                        onPress={() => navigation.navigate('Show', { id: item.id })}
-                    >
-                        <Text style={styles.title}>{item.title}</Text>
-                        <TouchableOpacity onPress={() => deleteBlogPost(item.id)}>
-                            <MaterialIcons style={styles.icon} name="delete" />
+        <>
+            <ScrollView contentContainerStyle={styles.container}>
+                <RefreshControl refreshing={refreshing} onRefresh={() => getBlogPosts()} />
+                <FlatList
+                    numColumns={2}
+                    columnWrapperStyle={styles.row}
+                    keyExtractor={blogPost => blogPost.id}
+                    data={state}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={styles.card}
+                            onPress={() =>
+                                navigation.navigate('Show', { id: item.id, name: item.title })
+                            }
+                        >
+                            <Text numberOfLines={1} style={styles.title}>
+                                {item.title}
+                            </Text>
+                            <TouchableOpacity onPress={() => deleteBlogPost(item.id)}>
+                                <MaterialIcons style={styles.icon} name="delete" />
+                            </TouchableOpacity>
                         </TouchableOpacity>
-                    </TouchableOpacity>
-                )}
-            />
-        </ScrollView>
+                    )}
+                />
+            </ScrollView>
+        </>
     );
 };
 
@@ -90,7 +116,8 @@ IndexScreen.navigationOptions = ({ navigation }) => ({
         <TouchableOpacity onPress={() => navigation.navigate('Create')}>
             <Feather name="plus" size={25} style={{ marginRight: 20 }} />
         </TouchableOpacity>
-    )
+    ),
+    headerBackTitle: 'Back'
 });
 
 export default IndexScreen;

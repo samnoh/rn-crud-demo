@@ -15,4 +15,8 @@ const CreateScreen = ({ navigation }) => {
     );
 };
 
+CreateScreen.navigationOptions = () => ({
+    title: 'New Post'
+});
+
 export default CreateScreen;

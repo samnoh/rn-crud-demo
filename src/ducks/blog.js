@@ -1,12 +1,10 @@
-import uuid from 'uuid/v4';
-
-const ADD_POST = 'ADD_POST';
+const GET_POSTS = 'GET_POSTS';
 const DELETE_POST = 'DELETE_POST';
 const EDIT_POST = 'EDIT_POST';
 
-export const addPost = (title, content) => ({
-    type: ADD_POST,
-    payload: { title, content }
+export const getPosts = res => ({
+    type: GET_POSTS,
+    payload: res.data
 });
 
 export const deletePost = id => ({
@@ -21,11 +19,8 @@ export const editPost = (id, title, content) => ({
 
 const blogReducer = (state, action) => {
     switch (action.type) {
-        case ADD_POST:
-            return [
-                ...state,
-                { id: uuid(), title: action.payload.title, content: action.payload.content }
-            ];
+        case GET_POSTS:
+            return action.payload;
         case DELETE_POST:
             return state.filter(blogPost => blogPost.id !== action.payload);
         case EDIT_POST:
