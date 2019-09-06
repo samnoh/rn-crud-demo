@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 const ShowScreen = ({ navigation }) => {
     const { state } = useContext(Context);
 
-    const blogPost = state.find(blogPost => blogPost.id === navigation.getParam('id'));
+    const blogPost = state.posts.find(blogPost => blogPost.id === navigation.getParam('id'));
 
     return (
         <View style={styles.container}>
